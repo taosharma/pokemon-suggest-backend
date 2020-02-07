@@ -2,11 +2,18 @@ const fs = require("fs");
 const { promisify } = require("util");
 
 const readFile = promisify(fs.readFile);
+const writeFile = promisify(fs.writeFile);
 
 async function getPokemon() {
   const data = await readFile("./pokedex.json");
   const pokemon = JSON.parse(data);
   return pokemon;
+}
+
+async function savePokemon(pokemon) {
+  const pokemonArray = await getPokemon();
+  const newArray = [...pokemonArray, pokemon];
+  await writeFile("./pokedex.json", JSON.stringify(newArray));
 }
 
 async function getPokemonById(id) {
@@ -28,7 +35,9 @@ async function searchPokemonByName(search) {
 async function searchPokemonByType(types) {
   const pokemon = await getPokemon();
   return pokemon.filter(item =>
-    item.types.toLowerCase().includes(types.toLowerCase())
+    item.types
+      .toLowerCase()
+      .filter(item => item.types.toLowerCase().includes(types.toLowerCase()))
   );
 }
 
@@ -37,5 +46,6 @@ module.exports = {
   getPokemonById,
   getPokemonByName,
   searchPokemonByName,
-  searchPokemonByType
+  searchPokemonByType,
+  savePokemon
 };

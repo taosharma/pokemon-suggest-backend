@@ -5,7 +5,8 @@ const {
   getPokemonById,
   getPokemonByName,
   searchPokemonByName,
-  searchPokemonByType
+  searchPokemonByType,
+  savePokemon
 } = require("./pokemon.js");
 
 router.get("/pokemon", async (request, response) => {
@@ -49,10 +50,10 @@ router.get("/pokemon/:name", async (request, response) => {
   response.json(pokemon);
 });
 
-router.post("/pokemon", (request, response) => {
+router.post("/pokemon", async (request, response) => {
   const { body } = request;
-  console.log(body);
-  response.send("you have made a pwost request");
+  await savePokemon(body);
+  response.send(`you have saved ${body} as a pokemon.`);
 });
 
 module.exports = router;
