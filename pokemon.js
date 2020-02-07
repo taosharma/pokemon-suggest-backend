@@ -9,6 +9,12 @@ async function getPokemon() {
   return pokemon;
 }
 
+async function getPokemonById(id) {
+  const pokemon = await getPokemon();
+  return pokemon.find(item => item.pkdx_id == id);
+}
+
 module.exports = {
-  getPokemon
+  getPokemon,
+  getPokemonById
 };
