@@ -19,8 +19,23 @@ async function getPokemonByName(name) {
   return pokemon.find(item => item.name.toLowerCase() == name.toLowerCase());
 }
 
+async function searchPokemonByName(search) {
+  const pokemon = await getPokemon();
+  return pokemon.filter(item =>
+    item.name.toLowerCase().includes(search.toLowerCase())
+  );
+}
+async function searchPokemonByType(types) {
+  const pokemon = await getPokemon();
+  return pokemon.filter(item =>
+    item.types.toLowerCase().includes(types.toLowerCase())
+  );
+}
+
 module.exports = {
   getPokemon,
   getPokemonById,
-  getPokemonByName
+  getPokemonByName,
+  searchPokemonByName,
+  searchPokemonByType
 };
