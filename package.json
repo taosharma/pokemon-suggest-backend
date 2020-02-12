@@ -6,7 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "dataBase:createTable": "node ./dataBase/scripts/createTable.js",
+    "dataBase:uploadPokemon": "node ./dataBase/scripts/uploadPokemon.js",
+    "dataBase:dropTable": "node ./dataBase/scripts/dropTable.js",
+    "dataBase:reset": "npm run dataBase:dropTable && npm run dataBase:createTable && npm run dataBase:uploadPokemon"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +19,7 @@
     "nodemon": "^2.0.2"
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "pg": "^7.18.1"
   }
 }
