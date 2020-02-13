@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const PORT = 5000;
-const pokemonRouter = require("./pokemonRouter");
+const pokemonRouter = require("./routes/pokemon");
 
 app.use((request, response, next) => {
   console.log(`${request.method} request received to ${request.url}`);

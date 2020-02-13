@@ -6,8 +6,9 @@ const {
   getPokemonByName,
   searchPokemonByName,
   deletePokemonById,
-  savePokemon
-} = require("./pokemon.js");
+  savePokemon,
+  updatePokemonName
+} = require("../models/pokemon.js");
 
 router.get("/pokemon", async (request, response) => {
   const { name, id, search } = request.query;
@@ -36,6 +37,7 @@ router.get("/pokemon", async (request, response) => {
 
 router.post("/pokemon", async (request, response) => {
   const { body } = request;
+  console.log(body);
   const name = await savePokemon(body);
   response.send(`you have saved ${name} as a pokemon.`);
 });
@@ -57,6 +59,13 @@ router.delete("/pokemon/:id", async (request, response) => {
         `You have already deleted that pokemon from the pokedex. You are still the real monster.`
       );
   return;
+});
+
+router.patch("/pokemon/:id", async (request, response) => {
+  const { body } = request;
+  const { id } = request.params;
+  await updatePokemonName(body, id);
+  response.send(`You have updated a pokemon`);
 });
 
 module.exports = router;
