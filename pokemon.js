@@ -25,6 +25,7 @@ async function savePokemon(pokemonInput) {
     evolutions) VALUES ($1, $2, $3, $4, $5, $6)`,
     [pkdx_id, name, description, img_url, types, evolutions]
   );
+  return data.rows[0].name;
 }
 
 async function getPokemonById(id) {
@@ -46,8 +47,15 @@ async function searchPokemonByName(name) {
 }
 
 async function deletePokemonById(id) {
-  const data = await query(`DELETE FROM pokemon WHERE id=$1`, [id]);
-  return console.log(`Pokemon ID:${id} deleted.`);
+  const data = await query(`DELETE FROM pokemon WHERE id=$1 RETURNING name`, [
+    id
+  ]);
+  console.log(data.rowCount);
+  if (data.rowCount) {
+    return data.rows[0].name;
+  } else {
+    return undefined;
+  }
 }
 
 module.exports = {

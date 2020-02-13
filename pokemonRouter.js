@@ -10,7 +10,7 @@ const {
 } = require("./pokemon.js");
 
 router.get("/pokemon", async (request, response) => {
-  const { name, id, search, deletePokemon } = request.query;
+  const { name, id, search } = request.query;
 
   if (name) {
     const namedPokemon = await getPokemonByName(name);
@@ -30,22 +30,33 @@ router.get("/pokemon", async (request, response) => {
     return;
   }
 
-  if (deletePokemon) {
-    const deletedPokemon = await deletePokemonById(deletePokemon);
-    response.send(
-      `You have deleted ${deletePokemon} from the pokedex. You are the real monster`
-    );
-    return;
-  }
-
   const pokemon = await getPokemon();
   response.json(pokemon);
 });
 
 router.post("/pokemon", async (request, response) => {
   const { body } = request;
-  await savePokemon(body);
-  response.send(`you have saved ${body} as a pokemon.`);
+  const name = await savePokemon(body);
+  response.send(`you have saved ${name} as a pokemon.`);
+});
+
+router.delete("/pokemon/:id", async (request, response) => {
+  const { id } = request.params;
+  const name = await deletePokemonById(id);
+  if (name) {
+    response
+      .status(200)
+      .send(
+        `You have deleted ${name} from the pokedex. You are the real monster.`
+      );
+    return;
+  } else
+    response
+      .status(406)
+      .send(
+        `You have already deleted that pokemon from the pokedex. You are still the real monster.`
+      );
+  return;
 });
 
 module.exports = router;
