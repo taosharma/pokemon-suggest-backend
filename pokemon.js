@@ -1,44 +1,53 @@
-const fs = require("fs");
-const { promisify } = require("util");
-
-const readFile = promisify(fs.readFile);
-const writeFile = promisify(fs.writeFile);
+const { query } = require("./dataBase/index.js");
 
 async function getPokemon() {
-  const data = await readFile("./pokedex.json");
-  const pokemon = JSON.parse(data);
-  return pokemon;
+  const data = await query(`SELECT * FROM pokemon`);
+  return data.rows;
 }
 
-async function savePokemon(pokemon) {
-  const pokemonArray = await getPokemon();
-  const newArray = [...pokemonArray, pokemon];
-  await writeFile("./pokedex.json", JSON.stringify(newArray));
+async function savePokemon(pokemonInput) {
+  const {
+    pkdx_id,
+    name,
+    description,
+    img_url,
+    types,
+    evolutions
+  } = pokemonInput;
+
+  const data = await query(
+    `INSERT INTO pokemon (
+    pkdx_id,
+    name,
+    description,
+    img_url,
+    types,
+    evolutions) VALUES ($1, $2, $3, $4, $5, $6)`,
+    [pkdx_id, name, description, img_url, types, evolutions]
+  );
 }
 
 async function getPokemonById(id) {
-  const pokemon = await getPokemon();
-  return pokemon.find(item => item.pkdx_id == id);
+  const data = await query(`SELECT * FROM pokemon WHERE id=$1`, [id]);
+  return data.rows[0];
 }
 
 async function getPokemonByName(name) {
-  const pokemon = await getPokemon();
-  return pokemon.find(item => item.name.toLowerCase() == name.toLowerCase());
+  const data = await query(`SELECT * FROM pokemon WHERE name ILIKE $1`, [name]);
+  return data.rows[0];
 }
 
-async function searchPokemonByName(search) {
-  const pokemon = await getPokemon();
-  return pokemon.filter(item =>
-    item.name.toLowerCase().includes(search.toLowerCase())
+async function searchPokemonByName(name) {
+  const data = await query(
+    `SELECT * FROM pokemon WHERE name ILIKE '%' || $1 || '%'`,
+    [name]
   );
+  return data.rows;
 }
-async function searchPokemonByType(types) {
-  const pokemon = await getPokemon();
-  return pokemon.filter(item =>
-    item.types
-      .toLowerCase()
-      .filter(item => item.types.toLowerCase().includes(types.toLowerCase()))
-  );
+
+async function deletePokemonById(id) {
+  const data = await query(`DELETE FROM pokemon WHERE id=$1`, [id]);
+  return console.log(`Pokemon ID:${id} deleted.`);
 }
 
 module.exports = {
@@ -46,6 +55,6 @@ module.exports = {
   getPokemonById,
   getPokemonByName,
   searchPokemonByName,
-  searchPokemonByType,
+  deletePokemonById,
   savePokemon
 };
