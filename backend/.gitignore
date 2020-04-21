@@ -1,0 +1,7 @@
+node_modules/
+.env
+
+PGUSER = postgres
+PGHOST = 35.190.217.161
+PGDATABASE = postgres
+PGPASSWORD = mdvBBcrjHeukliyf
